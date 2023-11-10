@@ -81,13 +81,13 @@
     <build>
         <resources>
             <resource>
-                <directory>cms/src/main/java</directory>
+                <directory>src/main/java</directory>
                 <includes>
                     <include>**/*.xml</include>
                 </includes>
             </resource>
             <resource>
-                <directory>cms/src/main/resources</directory>
+                <directory>src/main/resources</directory>
             </resource>
         </resources>
         <plugins>
