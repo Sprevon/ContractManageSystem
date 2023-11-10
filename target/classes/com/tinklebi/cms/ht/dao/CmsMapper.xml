@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tinklebi.cms.ht.dao.CmsMapper">
+
+    <insert id="insertCms" useGeneratedKeys="true" keyProperty="contractId" keyColumn="contract_id">
+        <selectKey keyProperty="contractId" order="BEFORE" resultType="java.lang.Long">
+            select if(max(contract_id) is null, 1, max(contract_id) + 1) as contractId from cms_contract
+        </selectKey>
+        INSERT INTO cms_contract(contract_id, order_org_id, supply_org_id, receive_org_id, settle_org_id,
+        resource_id, resource_quality,resource_date, contract_term,
+        create_person, create_date, last_modify_person, last_modify_date,
+        edit_type)
+        VALUES(#{contractId}, #{orderOrgId}, #{supplyOrgId}, #{receiveOrgId}, #{settleOrgId},
+        #{resourceId}, #{resourceQuality}, #{resourceDate}, #{contractTerm},
+        #{userId}, NOW(), #{userId}, NOW(), #{editType})
+    </insert>
+    <insert id="insertInvoice">
+        INSERT INTO cms_invoice(contract_id, invoice_quantity, invoice_unit_price, invoice_price,
+                                invoice_tax_percent, invoice_tax, invoice_total, create_person,
+                                create_date, last_modify_person, last_modify_date)
+        VALUES (#{contractId}, #{invoiceQuantity}, #{invoiceUnitPrice}, #{invoicePrice}, #{invoiceTaxPercent},
+                #{invoiceTax}, #{invoiceTotal}, #{userId}, NOW(), #{userId}, NOW())
+    </insert>
+    <insert id="insertOrg">
+        INSERT INTO base_org(org_id, org_name, org_address, org_phone, org_fax,
+                             org_represent, org_mail, org_bank, org_bank_account, create_person,
+                             create_date, last_modify_person, last_modify_date)
+        VALUES (#{orgId}, #{orgName}, #{orgAddress}, #{orgPhone}, #{orgFax}, #{orgRepresent},
+                #{orgMail}, #{orgBank}, #{orgBankAccount}, #{userId}, NOW(), #{userId}, NOW())
+    </insert>
+    <insert id="insertResource">
+        INSERT INTO base_resource(resource_id, resource_name, resource_type, resource_spec,
+                                  create_person, create_date, last_modify_person, last_modify_date)
+        VALUES (#{resourceId}, #{resourceName}, #{resourceType}, #{resourceSpec}, #{userId}, NOW(),
+                #{userId}, NOW())
+    </insert>
+    <update id="updateCms">
+        UPDATE cms_contract
+        SET settle_org_id = #{settleOrgId}
+        WHERE contract_id = #{contractId}
+    </update>
+    <update id="updateInvoice">
+        UPDATE cms_invoice
+        SET invoice_tax_percent = #{invoiceTaxPercent}
+        WHErE invoice_id = #{invoiceId}
+    </update>
+    <delete id="deleteCms">
+        DELETE
+        FROM cms_contract
+        WHERE contract_id = #{contractId}
+    </delete>
+
+
+    <select id="selectCmsDetail" resultType="com.tinklebi.cms.ht.entity.po.CmsDetailsResult">
+        SELECT bos.org_id             AS supplyOrgId,
+               bos.org_name           AS supplyOrgName,
+               boo.org_id             AS orderOrgId,
+               boo.org_name           AS orderOrgName,
+               bor.org_id             AS receiveOrgId,
+               bor.org_name           AS receiveOrgName,
+               bose.org_id            AS settleOrgId,
+               bose.org_name          AS settleOrgName,
+               br.resource_id         AS resourceId,
+               br.resource_name       AS resourceName,
+               cc.resource_quality    AS resourceQuality,
+               ci.invoice_unit_price  AS invoiceUnitPrice,
+               ci.invoice_price       AS invoicePrice,
+               ci.invoice_tax_percent AS invoiceTaxPercent,
+               ci.invoice_tax         AS invoiceTax,
+               ci.invoice_total       AS invoiceTotal
+        FROM cms_contract cc
+                 LEFT JOIN base_org bos ON cc.supply_org_id = bos.org_id
+                 LEFT JOIN base_org boo ON cc.order_org_id = boo.org_id
+                 LEFT JOIN base_org bor ON cc.receive_org_id = bor.org_id
+                 LEFT JOIN base_org bose ON cc.settle_org_id = bose.org_id
+                 LEFT JOIN cms_invoice ci ON cc.contract_id = ci.contract_id
+                 LEFT JOIN base_resource br ON cc.resource_id = br.resource_id
+        WHERE cc.contract_id = #{contractId}
+    </select>
+    <select id="selectIfExist" resultType="com.tinklebi.cms.ht.entity.po.CmsDetailsResult">
+
+    </select>
+    <select id="selectOrg" resultType="com.tinklebi.cms.ht.entity.vo.CmsOrg">
+        SELECT bo.org_id           AS orgId,
+               bo.org_name         AS orgName,
+               bo.org_address      AS orgAddress,
+               bo.org_phone        AS orgPhone,
+               bo.org_fax          AS orgFax,
+               bo.org_mail         AS orgMail,
+               bo.org_bank         AS orgBank,
+               bo.org_bank_account AS orgBankAccount,
+               bus.user_name       AS orgRepresentName
+        FROM base_org bo
+                 LEFT JOIN base_user bus ON bo.org_represent = bus.user_id
+        WHERE bo.org_id = #{orgId}
+    </select>
+
+    <sql id="selectOrgBody">
+        SELECT bo.org_id      AS orgId,
+               bo.org_name    AS orgName,
+               bo.org_address AS orgAddress,
+               bo.org_phone   AS orgPhone,
+               bus.user_name  AS orgRepresentName
+        FROM base_org bo
+                 LEFT JOIN base_user bus ON bo.org_represent = bus.user_id
+    </sql>
+
+    <select id="selectResource" resultType="com.tinklebi.cms.ht.entity.vo.CmsResource">
+        <include refid="selectResourceBody"/>
+        WHERE br.resource_id = #{resourceId}
+    </select>
+
+    <sql id="selectResourceBody">
+        SELECT br.resource_id   AS resourceId,
+               br.resource_name AS resourceName,
+               br.resource_type AS resourceType,
+               br.resource_spec AS resourceSpec
+        FROM base_resource br
+    </sql>
+
+    <select id="selectCmsList" resultType="com.tinklebi.cms.ht.entity.po.CmsQueryList">
+        SELECT
+        cc.contract_id AS contractId,
+        bo.org_name AS orgName,
+        br.resource_name AS resourceName,
+        br.resource_spec AS resourceSpec,
+        cc.resource_quality AS resourceQuality,
+        ci.invoice_total AS invoiceTotal,
+        DATE_FORMAT(cc.resource_date, '%Y年%m月%d日 %H点%i分') AS resourceDate,
+        cc.edit_type AS editType
+        FROM cms_contract cc
+        LEFT JOIN base_org bo ON cc.supply_org_id = bo.org_id
+        LEFT JOIN base_resource br ON cc.resource_id = br.resource_id
+        LEFT JOIN cms_invoice ci ON cc.contract_id = ci.contract_id
+        <include refid="condition"/>
+        limit #{start}, #{limit}
+    </select>
+
+    <select id="selectOne" resultType="java.lang.Integer">
+
+    </select>
+
+    <select id="selectOrgList" resultType="com.tinklebi.cms.ht.entity.vo.CmsOrg">
+        <include refid="selectOrgBody"/>
+        <if test="orgName != null and orgName != ''">
+            WHERE bo.org_name like concat('%', #{orgName}, '%')
+        </if>
+        <if test="limit != 0 and start >=0">
+            limit #{start}, #{limit}
+        </if>
+    </select>
+
+    <select id="selectResourceList" resultType="com.tinklebi.cms.ht.entity.vo.CmsResource">
+        <include refid="selectResourceBody"/>
+        WHERE br.resource_name like concat('%', #{resourceName}, '%')
+    </select>
+
+    <select id="selectCmsListCount" resultType="java.lang.Integer">
+        SELECT
+            COUNT(1)
+        FROM cms_contract cc
+        LEFT JOIN base_org bo ON cc.supply_org_id = bo.org_id
+        LEFT JOIN base_resource br ON cc.resource_id = br.resource_id
+        LEFT JOIN cms_invoice ci ON cc.contract_id = ci.contract_id
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectOrgListTotal" resultType="java.lang.Integer">
+        SELECT COUNT(1)
+        FROM base_org bo
+        LEFT JOIN base_user bus ON bo.org_represent = bus.user_id
+        <if test="orgName != null and orgName != ''">
+            WHERE bo.org_name like concat('%', #{orgName}, '%')
+        </if>
+    </select>
+
+    <sql id="condition">
+        <where>
+            1 = 1
+            <if test="contractId != '' and contractId != null">
+                and cc.contract_id = #{contractId}
+            </if>
+            <if test="orgName != '' and orgName != null">
+                and bo.org_name like concat('%', #{orgName}, '%')
+            </if>
+            <if test="resourceName != '' and resourceName != null">
+                and br.resource_name like concat('%', #{resourceName}, '%')
+            </if>
+            <if test="resourceSpec != '' and resourceSpec != null">
+                and br.resource_spec = #{resourceSpec}
+            </if>
+            <if test="editTypes.size != 0 and editTypes != null">
+                and cc.edit_type in
+                <foreach collection="editTypes" item="item" index="index" open="("
+                         separator="," close=")">#{item}</foreach>
+            </if>
+            <if test="resourceDateStart != '' and resourceDateStart != null">
+                and cc.resource_date <![CDATA[ >= ]]> #{resourceDateStart}
+            </if>
+            <if test="resourceDateEnd != '' and resourceDateEnd != null">
+                and cc.resource_date <![CDATA[ <= ]]> #{resourceDateEnd}
+            </if>
+        </where>
+    </sql>
+
+</mapper>
