@@ -2,8 +2,9 @@
 <module type="JAVA_MODULE" version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$" dumb="true">
-      <sourceFolder url="file://$MODULE_DIR$/cms/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/cms/src/test" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/cms/target" />
     </content>
   </component>
 </module>
