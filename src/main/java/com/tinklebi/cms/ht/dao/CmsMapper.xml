@@ -37,6 +37,12 @@
         VALUES (#{resourceId}, #{resourceName}, #{resourceType}, #{resourceSpec}, #{userId}, NOW(),
                 #{userId}, NOW())
     </insert>
+
+    <insert id="insertCmsDelete">
+        INSERT INTO cms_delete(contract_id, is_delete, create_person, create_date, last_modify_person, last_modify_date)
+        VALUES (#{contractId}, '0', #{userId}, NOW(), #{userId}, NOW())
+    </insert>
+
     <update id="updateCms">
         UPDATE cms_contract
         SET settle_org_id = #{settleOrgId}
@@ -45,11 +51,22 @@
     <update id="updateInvoice">
         UPDATE cms_invoice
         SET invoice_tax_percent = #{invoiceTaxPercent}
-        WHErE invoice_id = #{invoiceId}
+        WHERE invoice_id = #{invoiceId}
     </update>
+    <update id="updateCmsPass">
+        UPDATE cms_contract
+        SET edit_type = '4'
+        WHERE contract_id = #{contractId}
+    </update>
+    <update id="updateCmsReject">
+        UPDATE cms_contract
+        SET edit_type = '3'
+        WHERE contract_id = #{contractId}
+    </update>
+
     <delete id="deleteCms">
-        DELETE
-        FROM cms_contract
+        UPDATE cms_delete
+        SET is_delete = '1'
         WHERE contract_id = #{contractId}
     </delete>
 
@@ -66,6 +83,9 @@
                br.resource_id         AS resourceId,
                br.resource_name       AS resourceName,
                cc.resource_quality    AS resourceQuality,
+               cc.resource_date       AS resourceDate,
+               cc.contract_term       AS contractTerm,
+               ci.invoice_id          AS invoiceId,
                ci.invoice_unit_price  AS invoiceUnitPrice,
                ci.invoice_price       AS invoicePrice,
                ci.invoice_tax_percent AS invoiceTaxPercent,
@@ -135,6 +155,7 @@
         LEFT JOIN base_org bo ON cc.supply_org_id = bo.org_id
         LEFT JOIN base_resource br ON cc.resource_id = br.resource_id
         LEFT JOIN cms_invoice ci ON cc.contract_id = ci.contract_id
+        LEFT JOIN cms_delete cd ON cc.contract_id = cd.contract_id
         <include refid="condition"/>
         limit #{start}, #{limit}
     </select>
@@ -165,6 +186,7 @@
         LEFT JOIN base_org bo ON cc.supply_org_id = bo.org_id
         LEFT JOIN base_resource br ON cc.resource_id = br.resource_id
         LEFT JOIN cms_invoice ci ON cc.contract_id = ci.contract_id
+        LEFT JOIN cms_delete cd on cc.contract_id = cd.contract_id
         <include refid="condition"/>
     </select>
 
@@ -202,6 +224,9 @@
             </if>
             <if test="resourceDateEnd != '' and resourceDateEnd != null">
                 and cc.resource_date <![CDATA[ <= ]]> #{resourceDateEnd}
+            </if>
+            <if test="true">
+                and cd.is_delete != '1'
             </if>
         </where>
     </sql>

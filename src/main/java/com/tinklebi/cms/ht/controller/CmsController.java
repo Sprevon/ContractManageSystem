@@ -110,6 +110,32 @@ public class CmsController {
     }
 
     /**
+     * 通过合同
+     * @param request
+     * @param cmsContract
+     * @return
+     */
+    @RequestMapping(value = "/passCms", method = {RequestMethod.POST})
+    @ResponseBody
+    public HTTPResult passCms(HttpServletRequest request, @RequestBody CmsContract cmsContract){
+        cmsContract.setUserId(request);
+        return service.passCms(cmsContract);
+    }
+
+    /**
+     * 拒绝合同
+     * @param request
+     * @param cmsContract
+     * @return
+     */
+    @RequestMapping(value = "/rejectCms", method = {RequestMethod.POST})
+    @ResponseBody
+    public HTTPResult rejectCms(HttpServletRequest request, @RequestBody CmsContract cmsContract){
+        cmsContract.setUserId(request);
+        return service.rejectCms(cmsContract);
+    }
+
+    /**
      * 编辑发票
      * @param request
      * @param cmsInvoice

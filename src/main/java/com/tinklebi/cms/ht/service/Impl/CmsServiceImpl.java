@@ -99,6 +99,7 @@ public class CmsServiceImpl implements CmsService {
     public HTTPResult createCms(CmsContract cmsContract) {
         cmsContract.setEditType("1");
         cmsMapper.insertCms(cmsContract);
+        cmsMapper.insertCmsDelete(cmsContract);
         return HTTPResult.buildSuccess();
     }
 
@@ -128,6 +129,30 @@ public class CmsServiceImpl implements CmsService {
         }else {
             return HTTPResult.buildFault("合同不存在!");
         }
+    }
+
+    /**
+     * 通过合同
+     *
+     * @param cmsContract
+     * @return
+     */
+    @Override
+    public HTTPResult passCms(CmsContract cmsContract) {
+        cmsMapper.updateCmsPass(cmsContract);
+        return HTTPResult.buildSuccess();
+    }
+
+    /**
+     * 拒绝合同
+     *
+     * @param cmsContract
+     * @return
+     */
+    @Override
+    public HTTPResult rejectCms(CmsContract cmsContract) {
+        cmsMapper.updateCmsReject(cmsContract);
+        return HTTPResult.buildSuccess();
     }
 
     /**

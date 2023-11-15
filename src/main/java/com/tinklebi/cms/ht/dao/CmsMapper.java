@@ -60,6 +60,12 @@ public interface CmsMapper {
     void insertCms(CmsContract cmsContract);
 
     /**
+     * 创建合同删除情况
+     * @param cmsContract
+     */
+    void insertCmsDelete(CmsContract cmsContract);
+
+    /**
      * 创建明细
      * @param cmsInvoice
      */
@@ -70,6 +76,18 @@ public interface CmsMapper {
      * @param cmsContract
      */
     void updateCms(CmsContract cmsContract);
+
+    /**
+     * 通过合同
+     * @param cmsContract
+     */
+    void updateCmsPass(CmsContract cmsContract);
+
+    /**
+     * 拒绝合同
+     * @param cmsContract
+     */
+    void updateCmsReject(CmsContract cmsContract);
 
     /**
      * 修改明细

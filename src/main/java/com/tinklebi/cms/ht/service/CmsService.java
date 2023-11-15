@@ -61,6 +61,20 @@ public interface CmsService {
     HTTPResult editCms(CmsContract cmsContract);
 
     /**
+     * 通过合同
+     * @param cmsContract
+     * @return
+     */
+    HTTPResult passCms(CmsContract cmsContract);
+
+    /**
+     * 拒绝合同
+     * @param cmsContract
+     * @return
+     */
+    HTTPResult rejectCms(CmsContract cmsContract);
+
+    /**
      * 编辑发票
      * @param cmsInvoice
      * @return

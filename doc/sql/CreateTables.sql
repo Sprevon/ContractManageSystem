@@ -33,7 +33,7 @@ create table base_resource
 ) comment = '资源数据表';
 
 #创建企业单位表
-drop table base_org;
+# drop table base_org;
 create table base_org
 (
     org_id             bigint(20) not null comment '企业编号',
@@ -73,7 +73,7 @@ create table cms_contract
 ) comment = '合同表';
 
 #创建发票表
-drop table cms_invoice;
+# drop table cms_invoice;
 create table cms_invoice
 (
     invoice_id          bigint(20) not null auto_increment comment '发票编号',
@@ -104,3 +104,13 @@ create table cms_org_resource
     last_modify_date   datetime   not null comment '最后修改时间',
     constraint cons_pk primary key (org_resource_id)
 ) comment = '企业资源表';
+
+create table cms_delete
+(
+    contract_id        bigint(20)      not null comment '合同编号',
+    is_delete          ENUM ('0', '1') not null default '0' comment '是否已销户',
+    create_person      bigint(20)      not null comment '创建人编号',
+    create_date        datetime        not null comment '创建时间',
+    last_modify_person bigint(20)      not null comment '最后修改人编号',
+    last_modify_date   datetime        not null comment '最后修改时间'
+) comment = '合同删除情况表';
