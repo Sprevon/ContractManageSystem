@@ -4,7 +4,7 @@ import com.tinklebi.cms.ht.entity.UserInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -15,7 +15,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CmsDetails extends UserInfo implements Serializable, CmsContractInfo {
-    @Serial
+//    @Serial
     private static final long serialVersionUID = -6816505595587622174L;
 
     /**

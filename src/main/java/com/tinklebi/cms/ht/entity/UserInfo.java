@@ -1,7 +1,6 @@
 package com.tinklebi.cms.ht.entity;
 
 import lombok.Data;
-import org.apache.catalina.manager.util.SessionUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

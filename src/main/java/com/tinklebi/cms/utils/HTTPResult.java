@@ -2,7 +2,7 @@ package com.tinklebi.cms.utils;
 
 import lombok.Data;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 import static com.tinklebi.cms.utils.Constants.*;
@@ -16,7 +16,7 @@ import static com.tinklebi.cms.utils.Constants.*;
 @Data
 public class HTTPResult implements Serializable {
 
-    @Serial
+//    @Serial
     private static final long serialVersionUID = 8881935645035272968L;
 
     /**

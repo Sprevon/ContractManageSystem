@@ -4,7 +4,7 @@ import com.tinklebi.cms.ht.entity.vo.CmsOrg;
 import com.tinklebi.cms.ht.entity.vo.CmsResource;
 import lombok.Data;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -14,7 +14,7 @@ import java.io.Serializable;
  */
 @Data
 public class CmsDetailsResult implements Serializable {
-    @Serial
+//    @Serial
     private static final long serialVersionUID = 1001258325591298919L;
 
     //合同部分
@@ -23,6 +23,11 @@ public class CmsDetailsResult implements Serializable {
      * 订单号
      */
     private Long contractId;
+
+    /**
+     * 订单描述
+     */
+    private String contractTerm;
 
     /**
      * 订货单位编号
@@ -98,6 +103,11 @@ public class CmsDetailsResult implements Serializable {
      * 资源数量
      */
     private Double resourceQuality;
+
+    /**
+     * 获取时间
+     */
+    private String resourceDate;
 
     /**
      * 资源信息

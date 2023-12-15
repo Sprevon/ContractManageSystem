@@ -3,7 +3,7 @@ package com.tinklebi.cms.ht.entity.po;
 import com.tinklebi.cms.ht.entity.vo.CmsQuery;
 import lombok.*;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -17,7 +17,7 @@ import java.io.Serializable;
 @ToString
 @AllArgsConstructor
 public class CmsQueryList extends CmsQuery implements Serializable {
-    @Serial
+//    @Serial
     private static final long serialVersionUID = 115853877768266850L;
     /**
      * 数量/吨

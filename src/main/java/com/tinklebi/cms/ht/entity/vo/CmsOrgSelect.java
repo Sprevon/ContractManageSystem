@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -18,7 +18,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CmsOrgSelect extends Pagination implements Serializable {
 
-    @Serial
+//    @Serial
     private static final long serialVersionUID = 6385807603983867127L;
 
     /**

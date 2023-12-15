@@ -5,7 +5,7 @@ import com.tinklebi.cms.ht.entity.enums.EditType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.Serial;
+//import java.io.Serial;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class CmsQuery extends Pagination implements Serializable {
-    @Serial
+//    @Serial
     private static final long serialVersionUID = -7402356809707563645L;
     /**
      * 订单号
