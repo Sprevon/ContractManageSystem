@@ -45,7 +45,13 @@
 
     <update id="updateCms">
         UPDATE cms_contract
-        SET settle_org_id = #{settleOrgId}
+        SET receive_org_id = #{receiveOrgId},
+            settle_org_id = #{settleOrgId},
+            resource_id = #{resourceId},
+            resource_date = #{resourceDate},
+            resource_quality = #{resourceQuality},
+            last_modify_date = NOW(),
+            last_modify_person = #{userId}
         WHERE contract_id = #{contractId}
     </update>
     <update id="updateInvoice">
